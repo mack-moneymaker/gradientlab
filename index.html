@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GradientLab — Free CSS Gradient Generator</title>
+    <meta name="description" content="Generate beautiful CSS gradients instantly. Linear, radial, and conic gradients with live preview. Copy CSS with one click. Free, no signup required.">
+    <meta property="og:title" content="GradientLab — Free CSS Gradient Generator">
+    <meta property="og:description" content="Generate beautiful CSS gradients instantly. Linear, radial, and conic. Copy CSS with one click.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mack-moneymaker.github.io/gradientlab/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="keywords" content="css gradient generator, gradient maker, css gradient, linear gradient, radial gradient, conic gradient, css background gradient, gradient tool">
+    <link rel="canonical" href="https://mack-moneymaker.github.io/gradientlab/">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "GradientLab",
+        "description": "Free CSS gradient generator with live preview",
+        "url": "https://mack-moneymaker.github.io/gradientlab/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #e0e0e0; min-height: 100vh; }
+        .header { text-align: center; padding: 2rem 1rem 1rem; }
+        .header h1 { font-size: 2.2rem; background: linear-gradient(135deg, #667eea, #764ba2, #f093fb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: #888; margin-top: 0.5rem; font-size: 1.05rem; }
+        .app { max-width: 1200px; margin: 0 auto; padding: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        @media (max-width: 768px) { .app { grid-template-columns: 1fr; } }
+        .preview-panel { position: sticky; top: 1rem; }
+        .preview { width: 100%; aspect-ratio: 16/9; border-radius: 16px; border: 1px solid #333; transition: background 0.3s; }
+        .controls { display: flex; flex-direction: column; gap: 1.2rem; }
+        .control-group { background: #151515; border-radius: 12px; padding: 1.2rem; border: 1px solid #222; }
+        .control-group h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 0.8rem; }
+        label { display: block; font-size: 0.9rem; color: #aaa; margin-bottom: 0.3rem; }
+        select, input[type="range"] { width: 100%; background: #222; border: 1px solid #333; color: #fff; padding: 0.5rem; border-radius: 8px; font-size: 0.95rem; }
+        input[type="range"] { -webkit-appearance: none; height: 6px; border: none; padding: 0; border-radius: 3px; cursor: pointer; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #667eea; cursor: pointer; }
+        .color-stops { display: flex; flex-direction: column; gap: 0.6rem; }
+        .color-stop { display: flex; align-items: center; gap: 0.5rem; }
+        .color-stop input[type="color"] { width: 40px; height: 36px; border: none; border-radius: 8px; cursor: pointer; background: none; }
+        .color-stop input[type="number"] { width: 70px; background: #222; border: 1px solid #333; color: #fff; padding: 0.4rem; border-radius: 6px; text-align: center; }
+        .color-stop .remove-btn { background: none; border: none; color: #666; cursor: pointer; font-size: 1.2rem; padding: 0 0.3rem; }
+        .color-stop .remove-btn:hover { color: #e74c3c; }
+        .btn { background: #667eea; color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: background 0.2s; }
+        .btn:hover { background: #5a6fd6; }
+        .btn-outline { background: transparent; border: 1px solid #444; color: #ccc; }
+        .btn-outline:hover { border-color: #667eea; color: #667eea; background: transparent; }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        .code-block { background: #111; border: 1px solid #333; border-radius: 10px; padding: 1rem; font-family: 'SF Mono', Monaco, monospace; font-size: 0.85rem; color: #a8d8ea; position: relative; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #333; border: none; color: #ccc; padding: 0.3rem 0.7rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+        .copy-btn:hover { background: #667eea; color: #fff; }
+        .presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 0.5rem; }
+        .preset { width: 100%; aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s, transform 0.15s; }
+        .preset:hover { border-color: #667eea; transform: scale(1.08); }
+        .row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .footer { text-align: center; padding: 3rem 1rem 2rem; color: #555; font-size: 0.85rem; }
+        .footer a { color: #667eea; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .faq { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        .faq h2 { font-size: 1.5rem; margin-bottom: 1rem; color: #ccc; }
+        .faq details { background: #151515; border: 1px solid #222; border-radius: 10px; margin-bottom: 0.6rem; padding: 1rem; }
+        .faq summary { cursor: pointer; font-weight: 600; color: #bbb; }
+        .faq p { margin-top: 0.6rem; color: #888; line-height: 1.6; }
+        .cta-banner { max-width: 800px; margin: 2rem auto; padding: 2rem; background: linear-gradient(135deg, #1a1a2e, #16213e); border: 1px solid #333; border-radius: 16px; text-align: center; }
+        .cta-banner h3 { color: #fff; margin-bottom: 0.5rem; }
+        .cta-banner p { color: #aaa; margin-bottom: 1rem; }
+        .fullwidth-btn { display: block; width: 100%; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 GradientLab</h1>
+        <p>Generate beautiful CSS gradients. Copy with one click.</p>
+    </div>
+
+    <div class="app">
+        <div class="controls">
+            <div class="control-group">
+                <h3>Gradient Type</h3>
+                <select id="gradientType">
+                    <option value="linear">Linear</option>
+                    <option value="radial">Radial</option>
+                    <option value="conic">Conic</option>
+                </select>
+            </div>
+
+            <div class="control-group" id="angleGroup">
+                <h3>Angle: <span id="angleVal">135</span>°</h3>
+                <input type="range" id="angle" min="0" max="360" value="135">
+            </div>
+
+            <div class="control-group">
+                <h3>Color Stops</h3>
+                <div class="color-stops" id="colorStops"></div>
+                <div class="row" style="margin-top: 0.8rem;">
+                    <button class="btn btn-sm btn-outline" onclick="addStop()">+ Add Stop</button>
+                    <button class="btn btn-sm btn-outline" onclick="randomize()">🎲 Random</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>CSS Output</h3>
+                <div class="code-block" id="cssOutput">
+                    <button class="copy-btn" onclick="copyCSS()">Copy</button>
+                    <code id="cssCode"></code>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Presets</h3>
+                <div class="presets" id="presets"></div>
+            </div>
+        </div>
+
+        <div class="preview-panel">
+            <div class="preview" id="preview"></div>
+            <button class="btn fullwidth-btn" style="margin-top:1rem;" onclick="downloadPNG()">📥 Download PNG (1200×630)</button>
+        </div>
+    </div>
+
+    <div class="cta-banner">
+        <h3>Need gradients at scale?</h3>
+        <p>Rendly's API generates screenshots, OG images, and HTML-to-image renders programmatically.</p>
+        <a href="https://rendly-api.fly.dev/?ref=gradientlab" class="btn">Try Rendly Free →</a>
+    </div>
+
+    <div class="faq">
+        <h2>FAQ</h2>
+        <details><summary>What is a CSS gradient?</summary><p>A CSS gradient is a smooth transition between two or more colors, used as a background image in CSS. Gradients can be linear (straight line), radial (circular), or conic (around a center point).</p></details>
+        <details><summary>How do I use a CSS gradient?</summary><p>Copy the generated CSS code and paste it into your stylesheet as a <code>background</code> property. For example: <code>background: linear-gradient(135deg, #667eea, #764ba2);</code></p></details>
+        <details><summary>What's the difference between linear, radial, and conic gradients?</summary><p>Linear gradients transition along a straight line at a specified angle. Radial gradients radiate from a center point outward in a circle or ellipse. Conic gradients rotate around a center point like a color wheel.</p></details>
+        <details><summary>Can I use gradients as text color?</summary><p>Yes! Use <code>background-clip: text</code> and <code>-webkit-text-fill-color: transparent</code> to apply a gradient to text. GradientLab generates standard background gradients, but the CSS works for text too.</p></details>
+        <details><summary>Are CSS gradients supported in all browsers?</summary><p>Linear and radial gradients are supported in all modern browsers (Chrome, Firefox, Safari, Edge). Conic gradients have excellent support in modern browsers but may need a fallback for older versions.</p></details>
+        <details><summary>How many color stops can I use?</summary><p>CSS gradients support unlimited color stops. GradientLab lets you add as many as you need. For smooth gradients, 2-4 stops usually look best.</p></details>
+    </div>
+
+    <div class="footer">
+        <p>Built by <a href="https://github.com/mack-moneymaker">Mack</a> · <a href="https://mack-moneymaker.github.io/sigcraft/">SigCraft</a> · <a href="https://mack-moneymaker.github.io/faviconify/">Faviconify</a> · <a href="https://rendly-api.fly.dev/?ref=gradientlab">Rendly API</a></p>
+    </div>
+
+    <script>
+    const PRESETS = [
+        {name:'Sunset',stops:[{color:'#f093fb',pos:0},{color:'#f5576c',pos:50},{color:'#ffd93d',pos:100}],angle:135,type:'linear'},
+        {name:'Ocean',stops:[{color:'#667eea',pos:0},{color:'#764ba2',pos:100}],angle:135,type:'linear'},
+        {name:'Fire',stops:[{color:'#f12711',pos:0},{color:'#f5af19',pos:100}],angle:135,type:'linear'},
+        {name:'Mint',stops:[{color:'#00b09b',pos:0},{color:'#96c93d',pos:100}],angle:135,type:'linear'},
+        {name:'Night',stops:[{color:'#0f0c29',pos:0},{color:'#302b63',pos:50},{color:'#24243e',pos:100}],angle:135,type:'linear'},
+        {name:'Cotton Candy',stops:[{color:'#e0c3fc',pos:0},{color:'#8ec5fc',pos:100}],angle:120,type:'linear'},
+        {name:'Peach',stops:[{color:'#ffecd2',pos:0},{color:'#fcb69f',pos:100}],angle:135,type:'linear'},
+        {name:'Aurora',stops:[{color:'#a8edea',pos:0},{color:'#fed6e3',pos:100}],angle:135,type:'linear'},
+        {name:'Neon',stops:[{color:'#00f260',pos:0},{color:'#0575e6',pos:100}],angle:135,type:'linear'},
+        {name:'Berry',stops:[{color:'#8e2de2',pos:0},{color:'#4a00e0',pos:100}],angle:135,type:'linear'},
+        {name:'Gold',stops:[{color:'#f7971e',pos:0},{color:'#ffd200',pos:100}],angle:135,type:'linear'},
+        {name:'Aqua',stops:[{color:'#13547a',pos:0},{color:'#80d0c7',pos:100}],angle:135,type:'linear'},
+        {name:'Flamingo',stops:[{color:'#ee9ca7',pos:0},{color:'#ffdde1',pos:100}],angle:135,type:'linear'},
+        {name:'Cosmic',stops:[{color:'#ff00cc',pos:0},{color:'#333399',pos:100}],angle:135,type:'linear'},
+        {name:'Emerald',stops:[{color:'#348f50',pos:0},{color:'#56b4d3',pos:100}],angle:135,type:'linear'},
+        {name:'Rainbow',stops:[{color:'#ff0000',pos:0},{color:'#ff8800',pos:17},{color:'#ffff00',pos:33},{color:'#00ff00',pos:50},{color:'#0088ff',pos:67},{color:'#8800ff',pos:83},{color:'#ff00ff',pos:100}],angle:90,type:'linear'},
+    ];
+
+    let stops = [{color:'#667eea',pos:0},{color:'#764ba2',pos:100}];
+
+    function renderStops() {
+        const c = document.getElementById('colorStops');
+        c.innerHTML = '';
+        stops.forEach((s,i) => {
+            const d = document.createElement('div');
+            d.className = 'color-stop';
+            d.innerHTML = `<input type="color" value="${s.color}" onchange="stops[${i}].color=this.value;update()">
+                <input type="number" min="0" max="100" value="${s.pos}" onchange="stops[${i}].pos=parseInt(this.value);update()" style="width:60px">
+                <span style="color:#666">%</span>
+                ${stops.length > 2 ? `<button class="remove-btn" onclick="stops.splice(${i},1);renderStops();update()">×</button>` : ''}`;
+            c.appendChild(d);
+        });
+    }
+
+    function addStop() {
+        const last = stops[stops.length-1];
+        const colors = ['#f093fb','#f5576c','#ffd93d','#00b09b','#96c93d','#8ec5fc','#e0c3fc'];
+        stops.push({color:colors[Math.floor(Math.random()*colors.length)], pos: Math.min(100, last.pos + 20)});
+        renderStops(); update();
+    }
+
+    function randomize() {
+        const n = 2 + Math.floor(Math.random()*2);
+        stops = [];
+        for(let i=0;i<n;i++) stops.push({color:'#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'), pos:Math.round(i*100/(n-1))});
+        document.getElementById('angle').value = Math.floor(Math.random()*360);
+        document.getElementById('angleVal').textContent = document.getElementById('angle').value;
+        renderStops(); update();
+    }
+
+    function getCSS() {
+        const type = document.getElementById('gradientType').value;
+        const angle = document.getElementById('angle').value;
+        const stopsStr = stops.map(s => `${s.color} ${s.pos}%`).join(', ');
+        if(type === 'linear') return `background: linear-gradient(${angle}deg, ${stopsStr});`;
+        if(type === 'radial') return `background: radial-gradient(circle, ${stopsStr});`;
+        return `background: conic-gradient(from ${angle}deg, ${stopsStr});`;
+    }
+
+    function update() {
+        const css = getCSS();
+        document.getElementById('preview').style.cssText = css;
+        document.getElementById('cssCode').textContent = css;
+    }
+
+    function copyCSS() {
+        navigator.clipboard.writeText(getCSS());
+        const btn = document.querySelector('.copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
+    }
+
+    function downloadPNG() {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200; canvas.height = 630;
+        const ctx = canvas.getContext('2d');
+        const type = document.getElementById('gradientType').value;
+        const angle = parseInt(document.getElementById('angle').value);
+        let grad;
+        if(type === 'linear') {
+            const rad = angle * Math.PI / 180;
+            const cx = 600, cy = 315;
+            const len = Math.sqrt(1200*1200+630*630)/2;
+            grad = ctx.createLinearGradient(cx-Math.cos(rad)*len, cy-Math.sin(rad)*len, cx+Math.cos(rad)*len, cy+Math.sin(rad)*len);
+        } else if(type === 'radial') {
+            grad = ctx.createRadialGradient(600,315,0,600,315,600);
+        } else {
+            grad = ctx.createConicGradient(angle*Math.PI/180, 600, 315);
+        }
+        stops.forEach(s => grad.addColorStop(s.pos/100, s.color));
+        ctx.fillStyle = grad;
+        ctx.fillRect(0,0,1200,630);
+        const link = document.createElement('a');
+        link.download = 'gradient.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+
+    // Presets
+    const pc = document.getElementById('presets');
+    PRESETS.forEach(p => {
+        const d = document.createElement('div');
+        d.className = 'preset';
+        d.title = p.name;
+        const stopsStr = p.stops.map(s => `${s.color} ${s.pos}%`).join(', ');
+        d.style.background = `linear-gradient(${p.angle}deg, ${stopsStr})`;
+        d.onclick = () => {
+            stops = JSON.parse(JSON.stringify(p.stops));
+            document.getElementById('gradientType').value = p.type;
+            document.getElementById('angle').value = p.angle;
+            document.getElementById('angleVal').textContent = p.angle;
+            renderStops(); update();
+        };
+        pc.appendChild(d);
+    });
+
+    // Angle slider
+    document.getElementById('angle').addEventListener('input', e => {
+        document.getElementById('angleVal').textContent = e.target.value;
+        update();
+    });
+    document.getElementById('gradientType').addEventListener('change', e => {
+        document.getElementById('angleGroup').querySelector('h3').textContent =
+            e.target.value === 'radial' ? 'Shape' : `Angle: ${document.getElementById('angle').value}°`;
+        update();
+    });
+
+    renderStops(); update();
+    </script>
+</body>
+</html>
